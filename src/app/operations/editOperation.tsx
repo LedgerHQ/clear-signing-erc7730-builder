@@ -11,46 +11,54 @@ import { useEffect } from "react";
 import { TokenAmountFieldFormSchema } from "./fields/tokenAmountFormField";
 import { NftNameParametersFormSchema } from "./fields/nftNameFieldForm";
 import { AddressNameParametersFormSchema } from "./fields/addressNameFieldForm";
-import { UnitParametersFormSchema } from "./fields/unitFieldForm copy";
+import { UnitParametersFormSchema } from "./fields/unitFieldForm";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ValidOperationButton from "./validOperationButton";
 import ReviewOperationsButton from "./reviewOperationsButton";
 
+const BaseFieldSchema = z.object({
+  label: z.string().nullable().optional(),
+  format: z.union([
+    z.enum([
+      "raw",
+      "addressName",
+      "calldata",
+      "amount",
+      "tokenAmount",
+      "nftName",
+      "date",
+      "duration",
+      "unit",
+      "enum",
+    ]),
+    z.null(),
+    z.undefined(),
+  ]),
+  params: z.union([
+    DateFieldFormSchema,
+    TokenAmountFieldFormSchema,
+    NftNameParametersFormSchema,
+    AddressNameParametersFormSchema,
+    UnitParametersFormSchema,
+    z.object({}).strict(),
+  ]),
+  isIncluded: z.boolean(),
+});
+
+export type FieldSchemaType = z.infer<typeof BaseFieldSchema> & {
+  fields?: FieldSchemaType[];
+};
+
+const FieldSchema: z.ZodType<FieldSchemaType> = BaseFieldSchema.extend({
+  fields: z.lazy(() => z.array(FieldSchema)).optional(),
+});
+
 const OperationFormSchema = z.object({
   intent: z.string().min(1, {
     message: "Please enter the intent of the operation.",
   }),
-  fields: z.array(
-    z.object({
-      label: z.string(),
-      format: z.union([
-        z.enum([
-          "raw",
-          "addressName",
-          "calldata",
-          "amount",
-          "tokenAmount",
-          "nftName",
-          "date",
-          "duration",
-          "unit",
-          "enum",
-        ]),
-        z.null(),
-        z.undefined(),
-      ]),
-      params: z.union([
-        DateFieldFormSchema,
-        TokenAmountFieldFormSchema,
-        NftNameParametersFormSchema,
-        AddressNameParametersFormSchema,
-        UnitParametersFormSchema,
-        z.object({}).strict(),
-      ]),
-      isIncluded: z.boolean(),
-    }),
-  ),
+  fields: z.array(FieldSchema),
 });
 
 export type OperationFormType = z.infer<typeof OperationFormSchema>;
@@ -73,6 +81,9 @@ const EditOperation = ({ selectedOperation }: Props) => {
 
   const router = useRouter();
 
+  // const toot = useErc7730Store((s) => s.generatedErc7730);
+  // console.log("toto", toot);
+
   const form = useForm<OperationFormType>({
     resolver: zodResolver(OperationFormSchema),
     defaultValues: {
@@ -83,26 +94,19 @@ const EditOperation = ({ selectedOperation }: Props) => {
 
   useEffect(() => {
     if (!operationToEdit) return;
+
     const defaultValues = {
       intent:
         typeof operationToEdit.intent === "string"
           ? operationToEdit.intent
           : "",
-      fields:
-        operationToEdit.fields?.map((field) => {
-          const label = "label" in field ? (field.label ?? "") : "";
-          const isIncluded =
-            operationValidated === null
-              ? true
-              : !!operationValidated.fields.find((f) => f.path === field.path);
-          return {
-            ...field,
-            label,
-            format: "format" in field ? (field.format ?? null) : undefined,
-            params: "params" in field ? (field.params ?? {}) : {},
-            isIncluded,
-          };
-        }) ?? [],
+      fields: operationToEdit.fields.map((field) => ({
+        ...field,
+        isIncluded:
+          operationValidated === null
+            ? true
+            : !!operationValidated.fields.find((f) => f.path === field.path),
+      })),
     };
 
     form.reset(defaultValues);
@@ -114,10 +118,10 @@ const EditOperation = ({ selectedOperation }: Props) => {
     const { intent, fields } = form.getValues();
 
     console.log("fields", fields);
-    const cleanFields = fields.map((field) => {
-      // need to delete isIncluded
-      return field;
-    });
+
+    const processedFields = fields
+      .filter((field) => field.isIncluded)
+      .map(({ isIncluded, ...rest }) => rest);
 
     setOperationData(
       selectedOperation,
@@ -127,7 +131,7 @@ const EditOperation = ({ selectedOperation }: Props) => {
       },
       {
         intent,
-        fields: fields.filter((field) => field.isIncluded),
+        fields: processedFields,
       },
     );
   }

@@ -13,6 +13,10 @@ const predefinedAddresses = [
     label: "Poap",
     value: "0x0bb4D3e88243F4A057Db77341e6916B0e449b158",
   },
+  {
+    label: "Apecoin: Staking",
+    value: "0x5954ab967bc958940b7eb73ee84797dc8a2afbb9",
+  },
 ];
 
 const predefinedABIs = [

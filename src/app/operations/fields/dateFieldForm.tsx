@@ -32,15 +32,15 @@ export const DateFieldFormSchema = z.object({
 
 interface Props {
   form: UseFormReturn<OperationFormType>;
-  index: number;
+  fieldPath: `fields.${number}`;
 }
 
-const DateFieldForm = ({ form, index }: Props) => {
+const DateFieldForm = ({ form, fieldPath }: Props) => {
   return (
     <Form {...form}>
       <FormField
         control={form.control}
-        name={`fields.${index}.params.encoding`}
+        name={`${fieldPath}.params.encoding`}
         render={({ field }) => (
           <FormItem className="mb-1">
             <FormLabel>Date encoding</FormLabel>
@@ -50,7 +50,7 @@ const DateFieldForm = ({ form, index }: Props) => {
             </FormDescription>
             <Select
               onValueChange={field.onChange}
-              defaultValue={form.watch(`fields.${index}.params.encoding`)}
+              defaultValue={form.watch(`${fieldPath}.params.encoding`)}
             >
               <FormControl>
                 <SelectTrigger>

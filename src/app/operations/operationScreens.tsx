@@ -4,25 +4,39 @@ import { ReviewScreen } from "~/components/devices/reviewScreen";
 import { getScreensForOperation } from "~/shared/getScreensForOperation";
 import { type Operation } from "~/store/types";
 import { type OperationFormType } from "./editOperation";
+import { type FieldSchemaType } from "./editOperation";
 
 interface Props {
-  operation: Operation;
   form: UseFormReturn<OperationFormType>;
 }
 
-const OperationScreens = ({ operation, form }: Props) => {
+export const getLeafFields = (fields: FieldSchemaType[]): FieldSchemaType[] => {
+  const leafFields: FieldSchemaType[] = [];
+
+  const extractLeafFields = (field: FieldSchemaType) => {
+    if (!field.fields || field.fields.length === 0) {
+      leafFields.push(field);
+    } else {
+      field.fields.forEach(extractLeafFields);
+    }
+  };
+
+  fields.forEach(extractLeafFields);
+
+  return leafFields;
+};
+
+const OperationScreens = ({ form }: Props) => {
   const { fields } = form.watch();
 
   if (fields.length === 0) return null;
 
+  const leafFields = getLeafFields(fields);
+
+  console.log("leafFields", leafFields);
   const screens = getScreensForOperation({
-    ...operation,
-    fields: operation.fields
-      .map((field, index) => ({
-        ...field,
-        ...fields[index],
-      }))
-      .filter((field) => field.isIncluded),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+    fields: leafFields.filter((field) => field.isIncluded) as any,
   });
 
   const totalPages = screens.length + 1;

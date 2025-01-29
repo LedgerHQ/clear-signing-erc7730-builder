@@ -18,19 +18,18 @@ import TokenAmountFieldForm from "./tokenAmountFormField";
 import NftNameParametersForm from "./nftNameFieldForm";
 import AddressNameParametersForm from "./addressNameFieldForm";
 import DurationFieldForm from "./durationFieldForm";
-import UnitParametersForm from "./unitFieldForm copy";
+import UnitParametersForm from "./unitFieldForm";
 
 interface Props {
   form: UseFormReturn<OperationFormType>;
-  index: number;
   field: Operation["fields"][number];
+  fieldPath: `fields.${number}`;
 }
 
-const FieldOption = ({ form, index, field }: Props) => {
-  const format = form.watch(`fields.${index}.format`);
-
+const FieldOption = ({ form, field, fieldPath }: Props) => {
   if (!("format" in field)) return <div>unknown field format</div>;
 
+  const { format } = field;
   if (format === "raw") {
     return <RawFieldForm />;
   }
@@ -40,11 +39,11 @@ const FieldOption = ({ form, index, field }: Props) => {
   }
 
   if (format === "tokenAmount") {
-    return <TokenAmountFieldForm form={form} index={index} />;
+    return <TokenAmountFieldForm form={form} fieldPath={fieldPath} />;
   }
 
   if (format === "addressName") {
-    return <AddressNameParametersForm form={form} index={index} />;
+    return <AddressNameParametersForm form={form} fieldPath={fieldPath} />;
   }
 
   if (format === "calldata") {
@@ -52,11 +51,11 @@ const FieldOption = ({ form, index, field }: Props) => {
   }
 
   if (format === "nftName") {
-    return <NftNameParametersForm form={form} index={index} />;
+    return <NftNameParametersForm form={form} fieldPath={fieldPath} />;
   }
 
   if (format === "date") {
-    return <DateFieldForm form={form} index={index} />;
+    return <DateFieldForm form={form} fieldPath={fieldPath} />;
   }
 
   if (format === "duration") {
@@ -64,7 +63,7 @@ const FieldOption = ({ form, index, field }: Props) => {
   }
 
   if (format === "unit") {
-    return <UnitParametersForm form={form} index={index} />;
+    return <UnitParametersForm form={form} fieldPath={fieldPath} />;
   }
 
   if (format === "enum") {
@@ -87,17 +86,19 @@ const possibleFormats: components["schemas"]["FieldFormat"][] = [
   "enum",
 ];
 
-const FieldSelector = ({ form, index, field }: Props) => {
+const FieldSelector = ({ form, field, fieldPath }: Props) => {
+  console.log("fieldPath format", fieldPath);
   return (
     <div className="flex flex-col gap-2">
       <FormField
         control={form.control}
-        name={`fields.${index}.format`}
+        name={`${fieldPath}.format`}
         render={({ field }) => (
           <FormItem>
             <FormLabel className="mt-1">Field format</FormLabel>
             <Select
               onValueChange={field.onChange}
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               defaultValue={field.value ?? undefined}
             >
               <SelectTrigger className="h-8 w-full text-sm">
@@ -114,7 +115,7 @@ const FieldSelector = ({ form, index, field }: Props) => {
           </FormItem>
         )}
       />
-      <FieldOption form={form} index={index} field={field} />
+      <FieldOption form={form} fieldPath={fieldPath} field={field} />
     </div>
   );
 };

@@ -8,7 +8,6 @@ import {
   FormLabel,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { Checkbox } from "~/components/ui/checkbox";
 import { Button } from "~/components/ui/button";
 import { type UseFormReturn } from "react-hook-form";
 import { type OperationFormType } from "../editOperation";
@@ -25,10 +24,10 @@ export const UnitParametersFormSchema = z.object({
 
 interface Props {
   form: UseFormReturn<OperationFormType>;
-  index: number;
+  fieldPath: `fields.${number}`;
 }
 
-const UnitParametersForm = ({ form, index }: Props) => {
+const UnitParametersForm = ({ form, fieldPath }: Props) => {
   // to check
   return (
     <Form {...form}>
@@ -36,7 +35,7 @@ const UnitParametersForm = ({ form, index }: Props) => {
       {/* Base Unit Symbol */}
       <FormField
         control={form.control}
-        name={`fields.${index}.params.base`}
+        name={`${fieldPath}.params.base`}
         render={({ field }) => (
           <FormItem className="mb-4">
             <FormLabel>Unit Base Symbol</FormLabel>
@@ -55,7 +54,7 @@ const UnitParametersForm = ({ form, index }: Props) => {
       {/* Decimals */}
       <FormField
         control={form.control}
-        name={`fields.${index}.params.decimals`}
+        name={`${fieldPath}.params.decimals`}
         render={({ field }) => (
           <FormItem className="mb-4">
             <FormLabel>Decimals</FormLabel>
@@ -72,7 +71,7 @@ const UnitParametersForm = ({ form, index }: Props) => {
       {/* Prefix */}
       <FormField
         control={form.control}
-        name={`fields.${index}.params.prefix`}
+        name={`${fieldPath}.params.prefix`}
         render={({ field }) => (
           <FormItem className="f mb-">
             <FormLabel>Prefix</FormLabel>

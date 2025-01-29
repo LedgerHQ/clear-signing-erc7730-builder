@@ -24,19 +24,19 @@ export type TokenAmountFieldFormType = z.infer<
 
 interface Props {
   form: UseFormReturn<OperationFormType>;
-  index: number;
+  fieldPath: `fields.${number}`;
 }
 
-const TokenAmountFieldForm = ({ form, index }: Props) => {
+const TokenAmountFieldForm = ({ form, fieldPath }: Props) => {
   const tokenPathParams = form.watch(
-    `fields.${index}.params`,
+    `${fieldPath}.params`,
   ) as TokenAmountFieldFormType;
 
   return (
     <Form {...form}>
       <FormField
         control={form.control}
-        name={`fields.${index}.params.tokenPath`}
+        name={`${fieldPath}.params.tokenPath`}
         render={({ field }) => (
           <FormItem className="mb-1">
             <FormLabel>Token Path</FormLabel>
@@ -56,7 +56,7 @@ const TokenAmountFieldForm = ({ form, index }: Props) => {
       />
       <FormField
         control={form.control}
-        name={`fields.${index}.params.nativeCurrencyAddress`}
+        name={`${fieldPath}.params.nativeCurrencyAddress`}
         render={({ field }) => (
           <FormItem className="mb-1">
             <FormLabel>Native Currency Address</FormLabel>
@@ -77,7 +77,7 @@ const TokenAmountFieldForm = ({ form, index }: Props) => {
       />
       <FormField
         control={form.control}
-        name={`fields.${index}.params.threshold`}
+        name={`${fieldPath}.params.threshold`}
         render={({ field }) => (
           <FormItem className="mb-1">
             <FormLabel>Threshold</FormLabel>
@@ -97,7 +97,7 @@ const TokenAmountFieldForm = ({ form, index }: Props) => {
       />
       <FormField
         control={form.control}
-        name={`fields.${index}.params.message`}
+        name={`${fieldPath}.params.message`}
         render={({ field }) => (
           <FormItem className="mb-1">
             <FormLabel>Message</FormLabel>

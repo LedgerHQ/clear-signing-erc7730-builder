@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import {
   Form,
@@ -25,10 +24,10 @@ export const NftNameParametersFormSchema = z
 
 interface Props {
   form: UseFormReturn<OperationFormType>;
-  index: number;
+  fieldPath: `fields.${number}`;
 }
 
-const NftNameParametersForm = ({ form, index }: Props) => {
+const NftNameParametersForm = ({ form, fieldPath }: Props) => {
   return (
     <>
       <div>WIP</div>
@@ -42,7 +41,7 @@ const NftNameParametersForm = ({ form, index }: Props) => {
           <TabsContent value="collection">
             <FormField
               control={form.control}
-              name={`fields.${index}.params.collection`}
+              name={`${fieldPath}.params.collection`}
               render={({ field, fieldState }) => (
                 <FormItem className="mb-4">
                   <FormLabel>Collection Address</FormLabel>
@@ -66,7 +65,7 @@ const NftNameParametersForm = ({ form, index }: Props) => {
           <TabsContent value="collectionPath">
             <FormField
               control={form.control}
-              name={`fields.${index}.params.collectionPath`}
+              name={`${fieldPath}.params.collectionPath`}
               render={({ field, fieldState }) => (
                 <FormItem className="mb-4">
                   <FormLabel>Collection Path</FormLabel>

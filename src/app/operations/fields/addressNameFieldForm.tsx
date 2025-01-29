@@ -25,10 +25,10 @@ export const AddressNameParametersFormSchema = z.object({
 
 interface Props {
   form: UseFormReturn<OperationFormType>;
-  index: number;
+  fieldPath: `fields.${number}`;
 }
 
-const AddressNameParametersForm = ({ form, index }: Props) => {
+const AddressNameParametersForm = ({ form, fieldPath }: Props) => {
   const addressTypes = [
     {
       value: "wallet",
@@ -52,7 +52,7 @@ const AddressNameParametersForm = ({ form, index }: Props) => {
       <div>test is connected </div>
       <FormField
         control={form.control}
-        name={`fields.${index}.params.types`}
+        name={`${fieldPath}.params.types`}
         render={({ field }) => (
           <FormItem className="mb-4">
             <FormLabel>Address Type</FormLabel>
@@ -96,7 +96,7 @@ const AddressNameParametersForm = ({ form, index }: Props) => {
       {/* Trusted Sources Field */}
       <FormField
         control={form.control}
-        name={`fields.${index}.params.sources`}
+        name={`${fieldPath}.params.sources`}
         render={({ field }) => {
           const handleAddSource = () =>
             field.onChange([...(field.value || []), ""]);

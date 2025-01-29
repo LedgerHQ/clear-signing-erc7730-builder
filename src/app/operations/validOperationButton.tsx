@@ -8,13 +8,11 @@ interface Props {
 }
 
 const ValidOperationButton = ({ onClick }: Props) => {
-  const [buttonState, setButtonState] = useState<
-    "idle" | "validating" | "validated"
-  >("idle");
+  const [buttonState, setButtonState] = useState<"idle" | "validated">("idle");
   const { toast } = useToast();
 
   const handleSubmit = () => {
-    setButtonState("validating");
+    setButtonState("validated");
     onClick();
 
     toast({
@@ -22,14 +20,13 @@ const ValidOperationButton = ({ onClick }: Props) => {
       description: "The operation has been added to the final json.",
     });
     setTimeout(() => {
-      setButtonState("validated");
+      setButtonState("idle");
     }, 1500);
   };
 
   return (
     <Button onClick={handleSubmit}>
       {buttonState === "idle" && "Valid operation"}
-      {buttonState === "validating" && "Validating..."}
       {buttonState === "validated" && (
         <>
           Validated <Check />
