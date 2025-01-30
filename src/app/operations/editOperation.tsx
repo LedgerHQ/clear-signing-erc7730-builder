@@ -166,57 +166,6 @@ const EditOperation = ({ selectedOperation }: Props) => {
     form.reset(defaultValues);
   }, [operationToEdit, form, operationValidated]);
 
-  // useEffect(() => {
-  //   if (!operationToEdit) return;
-  //   // Recursive function to handle fields, including nested fields
-  //   const processField = (
-  //     field: PossibleOperation & { fields?: PossibleOperation[] },
-  //   ): FieldSchemaType | null => {
-  //     // Check for invalid types (e.g., InputReference or other types that are not editable)
-  //     if ("$ref" in field) return null; // Ignore InputReference or other invalid types
-
-  //     console.log("field", field);
-  //     // Process the params, ensuring it's valid
-  //     const validParams =
-  //       "params" in field && field.params && Object.keys(field.params).length
-  //         ? field.params
-  //         : undefined;
-
-  //     // Create the base field object
-  //     const validField: FieldSchemaType = {
-  //       label: "label" in field ? (field.label ?? null) : null, // Default to null if no label
-  //       format: "format" in field ? (field.format ?? "raw") : "raw", // Default to 'raw' if no format
-  //       params: validParams ?? {}, // Ensure params is always defined
-  //       isIncluded: true, // Default to true, can be adjusted later
-  //     };
-
-  //     // Recursively process nested fields, if any
-  //     if (field.fields) {
-  //       validField.fields = field.fields
-  //         .map((subField) => processField(subField)) // Recursively process nested fields
-  //         .filter((subField): subField is FieldSchemaType => subField !== null); // Filter out invalid nested fields
-  //     }
-
-  //     return validField; // Return the valid field or null
-  //   };
-
-  //   // Transformation logic for default values
-  //   const defaultValues: OperationFormType = {
-  //     intent:
-  //       typeof operationToEdit.intent === "string"
-  //         ? operationToEdit.intent
-  //         : "",
-  //     fields: operationToEdit.fields
-  //       .map((field) => processField(field)) // Process each field recursively
-  //       .filter((field): field is FieldSchemaType => field !== null), // Filter out null values
-  //   };
-
-  //   console.log("defaultValues", defaultValues);
-  //   console.log("operationToEdit", operationToEdit);
-  //   // Reset the form with validated default values
-  //   form.reset(defaultValues);
-  // }, [operationToEdit, form, operationValidated]);
-
   if (!selectedOperation) return null;
 
   function onSubmit() {
