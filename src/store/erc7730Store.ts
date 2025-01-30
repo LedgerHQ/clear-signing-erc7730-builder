@@ -1,6 +1,8 @@
 import { createStore } from "zustand/vanilla";
 import { type Operation, type OperationMetadata, type Erc7730 } from "./types";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { type FieldSchemaType } from "~/app/operations/editOperation";
+import formatOperationData from "./setOperationData";
 
 export interface Erc7730Store {
   generatedErc7730: Erc7730 | null;
@@ -15,9 +17,9 @@ export interface Erc7730Store {
   getOperationsByName: (name: string | null) => Operation | null;
   getFinalOperationByName: (name: string | null) => Operation | null;
   setOperationData: (
-    name: string,
-    operationData: Operation,
-    filteredOperationData: Operation,
+    operationName: string,
+    intent: string,
+    formField: FieldSchemaType[],
   ) => void;
 }
 
@@ -37,29 +39,24 @@ export const createErc7730Store = () => {
           const formats = get().finalErc7730?.display?.formats ?? {};
           return formats[name] ?? null;
         },
-        setOperationData: (name, operationData, filteredOperationData) => {
-          set((state) => ({
-            generatedErc7730: {
-              ...state.generatedErc7730!,
-              display: {
-                ...state.generatedErc7730!.display,
-                formats: {
-                  ...state.generatedErc7730?.display?.formats,
-                  [name]: operationData,
-                },
+        setOperationData: (operationName, intent, formField) => {
+          // why do I have a warning here?
+          set((state) => {
+            const { finalErc7730, generatedErc7730 } = formatOperationData(
+              {
+                generatedErc7730: state.generatedErc7730!,
+                finalErc7730: state.finalErc7730!,
               },
-            },
-            finalErc7730: {
-              ...state.finalErc7730!,
-              display: {
-                ...state.finalErc7730!.display,
-                formats: {
-                  ...state.finalErc7730?.display?.formats,
-                  [name]: filteredOperationData,
-                },
-              },
-            },
-          }));
+              operationName,
+              intent,
+              formField,
+            );
+            console.log("inside the set", { finalErc7730, generatedErc7730 });
+            return {
+              generatedErc7730,
+              finalErc7730,
+            };
+          });
         },
         getContractAddress: () => {
           const { generatedErc7730 } = get();

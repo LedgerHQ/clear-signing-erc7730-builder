@@ -39,6 +39,7 @@ const CardErc7730 = () => {
     const erc7730 = await fetchERC7730Metadata(input);
 
     if (erc7730) {
+      console.log(erc7730);
       setErc7730(erc7730);
       router.push("/metadata");
     }

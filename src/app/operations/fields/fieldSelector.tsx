@@ -27,9 +27,9 @@ interface Props {
 }
 
 const FieldOption = ({ form, field, fieldPath }: Props) => {
+  const format = form.watch(`${fieldPath}.format`);
   if (!("format" in field)) return <div>unknown field format</div>;
 
-  const { format } = field;
   if (format === "raw") {
     return <RawFieldForm />;
   }
@@ -97,11 +97,10 @@ const FieldSelector = ({ form, field, fieldPath }: Props) => {
             <FormLabel className="mt-1">Field format</FormLabel>
             <Select
               onValueChange={field.onChange}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               defaultValue={field.value ?? undefined}
             >
               <SelectTrigger className="h-8 w-full text-sm">
-                <SelectValue placeholder="value" />
+                <SelectValue placeholder="Select field value" />
               </SelectTrigger>
               <SelectContent>
                 {possibleFormats.map((format) => (

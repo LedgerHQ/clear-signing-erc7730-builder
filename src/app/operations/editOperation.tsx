@@ -118,7 +118,7 @@ const EditOperation = ({ selectedOperation }: Props) => {
         label,
         format: "format" in field ? (field.format ?? "raw") : "raw",
         params: validParams ?? {},
-        isIncluded: isFieldValidated ?? false, // If the field is missing in validatedFields, set isIncluded to false
+        isIncluded: isFieldValidated ?? true, // If the field is missing in validatedFields, set isIncluded to
       };
 
       // Recursively process nested fields
@@ -173,21 +173,7 @@ const EditOperation = ({ selectedOperation }: Props) => {
 
     console.log("on Submit", fields);
 
-    const processedFields = fields
-      .filter((field) => field.isIncluded)
-      .map(({ isIncluded, ...rest }) => rest);
-
-    setOperationData(
-      selectedOperation,
-      {
-        intent,
-        fields,
-      },
-      {
-        intent,
-        fields: processedFields,
-      },
-    );
+    setOperationData(selectedOperation, intent, fields);
   }
 
   return (
