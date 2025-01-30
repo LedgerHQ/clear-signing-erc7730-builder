@@ -19,23 +19,23 @@ import {
 } from "~/components/ui/collapsible";
 import { ChevronsDown } from "lucide-react";
 import FieldSelector from "./fields/fieldSelector";
+import { type Operation } from "~/store/types";
 
 interface Props {
   form: UseFormReturn<OperationFormType>;
   index: number;
   prefix: string;
+  formField: Operation["fields"][number];
 }
 
-const FieldFormCard = ({ form, index, prefix }: Props) => {
+const FieldFormCard = ({ form, index, prefix, formField }: Props) => {
   const fieldPath = `${prefix}.${index}` as `fields.${number}`;
-  const formField = form.watch(fieldPath);
 
   console.log("formField", formField);
   console.log("fieldPath", fieldPath);
 
   return (
     <Card key={`card-leaf-${index}`} className="flex flex-col gap-2 px-3 py-2">
-      {/* Render label input */}
       <div className="flex items-center justify-between">
         <div>{formField.path}</div>
         <FormField
@@ -52,14 +52,17 @@ const FieldFormCard = ({ form, index, prefix }: Props) => {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input placeholder="Enter label" {...field} />
+              <Input
+                placeholder="Enter label"
+                {...field}
+                value={field.value ?? ""}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
 
-      {/* Render additional field options */}
       <Collapsible className="py-3">
         <CollapsibleTrigger className="group flex w-full items-center justify-center gap-2 text-neutral-300">
           <span className="text-sm">

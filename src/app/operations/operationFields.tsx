@@ -17,7 +17,12 @@ const OperationFields = ({ form, operationToEdit }: Props) => {
     <div className="grid gap-2 md:grid-cols-2">
       <div className="flex flex-col gap-4">
         {form.watch("fields").map((_, index) => (
-          <FieldForm key={`field-${index}`} form={form} index={index} />
+          <FieldForm
+            key={`field-${index}`}
+            form={form}
+            index={index}
+            field={operationToEdit.fields[index]!}
+          />
         ))}
       </div>
       <OperationScreens form={form} />

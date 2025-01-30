@@ -81,9 +81,6 @@ const EditOperation = ({ selectedOperation }: Props) => {
 
   const router = useRouter();
 
-  // const toot = useErc7730Store((s) => s.generatedErc7730);
-  // console.log("toto", toot);
-
   const form = useForm<OperationFormType>({
     resolver: zodResolver(OperationFormSchema),
     defaultValues: {
