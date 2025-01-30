@@ -7,6 +7,11 @@ export type Operation = Erc7730["display"]["formats"][string];
 
 export type DateField = components["schemas"]["InputDateParameters"];
 
+export type PossibleOperation =
+  | components["schemas"]["InputReference"]
+  | components["schemas"]["InputFieldDescription"]
+  | components["schemas"]["InputNestedFields"];
+
 export type OperationMetadata = {
   operationName: string;
   metadata: Erc7730["metadata"] | null;

@@ -16,6 +16,7 @@ import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ValidOperationButton from "./validOperationButton";
 import ReviewOperationsButton from "./reviewOperationsButton";
+import { Operation, type PossibleOperation } from "~/store/types";
 
 const BaseFieldSchema = z.object({
   label: z.string().nullable().optional(),
@@ -92,29 +93,136 @@ const EditOperation = ({ selectedOperation }: Props) => {
   useEffect(() => {
     if (!operationToEdit) return;
 
-    const defaultValues = {
+    // Recursive function to process fields
+    const processField = (
+      field: PossibleOperation & { fields?: PossibleOperation[] },
+      validatedFields?: PossibleOperation[], // The corresponding validated fields
+    ): FieldSchemaType | null => {
+      if ("$ref" in field) return null; // Ignore InputReference
+
+      const label = "label" in field ? (field.label ?? null) : null;
+
+      // Check if the field exists in operationValidated
+      const isFieldValidated = validatedFields?.some(
+        (validatedField) =>
+          "label" in validatedField && validatedField.label === label,
+      );
+
+      // Ensure valid params
+      const validParams =
+        "params" in field && field.params && Object.keys(field.params).length
+          ? field.params
+          : undefined;
+
+      const validField: FieldSchemaType = {
+        label,
+        format: "format" in field ? (field.format ?? "raw") : "raw",
+        params: validParams ?? {},
+        isIncluded: isFieldValidated ?? false, // If the field is missing in validatedFields, set isIncluded to false
+      };
+
+      // Recursively process nested fields
+      if (field.fields) {
+        const validatedSubField = validatedFields?.find(
+          (vf): vf is { label: string } => "label" in vf && vf.label === label,
+        );
+        const validatedSubFields =
+          validatedSubField && "fields" in validatedSubField
+            ? validatedSubField.fields
+            : undefined; // Find the corresponding validated subfields
+
+        if ("fields" in field) {
+          validField.fields = field.fields
+            .map((subField) =>
+              processField(
+                subField,
+                validatedSubFields as PossibleOperation[] | undefined,
+              ),
+            )
+            .filter(
+              (subField): subField is FieldSchemaType => subField !== null,
+            );
+        }
+      }
+
+      return validField;
+    };
+
+    // Generate default values with validation
+    const defaultValues: OperationFormType = {
       intent:
         typeof operationToEdit.intent === "string"
           ? operationToEdit.intent
           : "",
-      fields: operationToEdit.fields.map((field) => ({
-        ...field,
-        isIncluded:
-          operationValidated === null
-            ? true
-            : !!operationValidated.fields.find((f) => f.path === field.path),
-      })),
+      fields: operationToEdit.fields
+        .map((field) => processField(field, operationValidated?.fields)) // Pass validated fields for comparison
+        .filter((field): field is FieldSchemaType => field !== null),
     };
 
+    console.log("defaultValues", defaultValues);
+    console.log("operationToEdit", operationToEdit);
+
+    // Reset form with updated default values
     form.reset(defaultValues);
   }, [operationToEdit, form, operationValidated]);
+
+  // useEffect(() => {
+  //   if (!operationToEdit) return;
+  //   // Recursive function to handle fields, including nested fields
+  //   const processField = (
+  //     field: PossibleOperation & { fields?: PossibleOperation[] },
+  //   ): FieldSchemaType | null => {
+  //     // Check for invalid types (e.g., InputReference or other types that are not editable)
+  //     if ("$ref" in field) return null; // Ignore InputReference or other invalid types
+
+  //     console.log("field", field);
+  //     // Process the params, ensuring it's valid
+  //     const validParams =
+  //       "params" in field && field.params && Object.keys(field.params).length
+  //         ? field.params
+  //         : undefined;
+
+  //     // Create the base field object
+  //     const validField: FieldSchemaType = {
+  //       label: "label" in field ? (field.label ?? null) : null, // Default to null if no label
+  //       format: "format" in field ? (field.format ?? "raw") : "raw", // Default to 'raw' if no format
+  //       params: validParams ?? {}, // Ensure params is always defined
+  //       isIncluded: true, // Default to true, can be adjusted later
+  //     };
+
+  //     // Recursively process nested fields, if any
+  //     if (field.fields) {
+  //       validField.fields = field.fields
+  //         .map((subField) => processField(subField)) // Recursively process nested fields
+  //         .filter((subField): subField is FieldSchemaType => subField !== null); // Filter out invalid nested fields
+  //     }
+
+  //     return validField; // Return the valid field or null
+  //   };
+
+  //   // Transformation logic for default values
+  //   const defaultValues: OperationFormType = {
+  //     intent:
+  //       typeof operationToEdit.intent === "string"
+  //         ? operationToEdit.intent
+  //         : "",
+  //     fields: operationToEdit.fields
+  //       .map((field) => processField(field)) // Process each field recursively
+  //       .filter((field): field is FieldSchemaType => field !== null), // Filter out null values
+  //   };
+
+  //   console.log("defaultValues", defaultValues);
+  //   console.log("operationToEdit", operationToEdit);
+  //   // Reset the form with validated default values
+  //   form.reset(defaultValues);
+  // }, [operationToEdit, form, operationValidated]);
 
   if (!selectedOperation) return null;
 
   function onSubmit() {
     const { intent, fields } = form.getValues();
 
-    console.log("fields", fields);
+    console.log("on Submit", fields);
 
     const processedFields = fields
       .filter((field) => field.isIncluded)

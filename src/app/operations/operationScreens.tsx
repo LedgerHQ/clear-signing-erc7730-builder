@@ -33,7 +33,6 @@ const OperationScreens = ({ form }: Props) => {
 
   const leafFields = getLeafFields(fields);
 
-  console.log("leafFields", leafFields);
   const screens = getScreensForOperation({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     fields: leafFields.filter((field) => field.isIncluded) as any,

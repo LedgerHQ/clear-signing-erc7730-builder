@@ -87,7 +87,6 @@ const possibleFormats: components["schemas"]["FieldFormat"][] = [
 ];
 
 const FieldSelector = ({ form, field, fieldPath }: Props) => {
-  console.log("fieldPath format", fieldPath);
   return (
     <div className="flex flex-col gap-2">
       <FormField
