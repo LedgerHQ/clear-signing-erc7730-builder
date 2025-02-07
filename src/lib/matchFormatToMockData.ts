@@ -1,9 +1,8 @@
 import { type OperationFormType } from "~/app/operations/editOperation";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const matchFieldFormatToMockData = (
   format: OperationFormType["fields"][number]["label"],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   params: any,
 ) => {
   switch (format) {
