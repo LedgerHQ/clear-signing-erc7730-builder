@@ -92,85 +92,73 @@ const MetadataForm = () => {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-        {metadata && (
-          <div className="hidden flex-row justify-between lg:flex">
-            <Devices metadata={metadata} address={address} />
+    <>
+      <div className="mb-20 flex w-full items-center justify-between">
+        <h1 className="text-2xl font-bold">Metadata</h1>
+        <Button onClick={form.handleSubmit(onSubmit)}>Continue</Button>
+
+        {/* <ToolBox /> */}
+      </div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-2 gap-10"
+        >
+          <div className="flex flex-col gap-6">
+            <FormField
+              control={form.control}
+              name="owner"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contract owner</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="legalName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Legal Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Url</FormLabel>
+                  <FormDescription>
+                    Where to find information on the entity the user interacts
+                    with.
+                  </FormDescription>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-        )}
 
-        <FormField
-          control={form.control}
-          name="owner"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Owner</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>Contract owner</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="legalName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Legal Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>Legal Name</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="url"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Url</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>
-                URL with more info on the entity the user interacts with.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex gap-2">
-          <Button type="submit">Submit</Button>
           {metadata && (
-            <div className="lg:hidden">
-              <Drawer>
-                <DrawerTrigger asChild>
-                  <Button>See on devices</Button>
-                </DrawerTrigger>
-                <DrawerContent className="h-[80%]">
-                  <DrawerHeader>
-                    <DrawerTitle className="sr-only">
-                      ledger devices
-                    </DrawerTitle>
-                  </DrawerHeader>
-                  <div className="overflow-y-auto">
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <Devices metadata={metadata} address={address} />
-                    </div>
-                  </div>
-                </DrawerContent>
-              </Drawer>
+            <div className="hidden flex-row justify-between lg:flex">
+              <Devices metadata={metadata} address={address} />
             </div>
           )}
-        </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </>
   );
 };
 
