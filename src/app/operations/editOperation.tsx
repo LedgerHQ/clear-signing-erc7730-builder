@@ -201,7 +201,7 @@ const EditOperation = ({ selectedOperation }: Props) => {
                   index={index}
                   operation={operationToEdit}
                 />
-                <div className="mt-4 flex justify-between">
+                <div className="mt-4 flex w-1/2 justify-between">
                   <Button
                     onClick={() =>
                       index > 0
@@ -214,7 +214,7 @@ const EditOperation = ({ selectedOperation }: Props) => {
 
                   {index < formSteps.length - 1 && (
                     <Button onClick={() => setStep(formSteps[index + 1] ?? "")}>
-                      Next
+                      Continue
                     </Button>
                   )}
                 </div>
