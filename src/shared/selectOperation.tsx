@@ -9,8 +9,12 @@ import useOperationStore from "~/store/useOperationStore";
 
 const SelectOperation = () => {
   const operation = useErc7730Store((s) => s.getOperations)();
-  const { selectedOperation, setSelectedOperation, validateOperation } =
-    useOperationStore();
+  const {
+    selectedOperation,
+    setSelectedOperation,
+    validateOperation,
+    updatedOperation,
+  } = useOperationStore();
 
   useEffect(() => {
     void useOperationStore.persist.rehydrate();
@@ -31,10 +35,12 @@ const SelectOperation = () => {
             value={operationName}
             className={cn(
               "overflow-hidden rounded-lg p-3 focus:outline-none",
-              validateOperation.includes(operationName) &&
-                "bg-green-100/90 text-[#6EB260]/90",
               selectedOperation === operationName &&
                 "bg-black/5 ring-black/10 dark:bg-white/5",
+              updatedOperation.includes(operationName) &&
+                "bg-orange-300/10 text-orange-500/90",
+              validateOperation.includes(operationName) &&
+                "bg-green-100/90 text-[#6EB260]/90",
             )}
           >
             <div className="flex w-full items-center justify-between">

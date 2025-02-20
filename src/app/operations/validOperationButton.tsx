@@ -24,7 +24,7 @@ const ValidOperationButton = ({ onClick, isValid }: Props) => {
   );
 
   const handleSubmit = () => {
-    setButtonState("validating");
+    setButtonState("validated");
     onClick();
 
     if (selectedOperation) setValidateOperation(selectedOperation);
@@ -33,14 +33,13 @@ const ValidOperationButton = ({ onClick, isValid }: Props) => {
       description: "The operation has been added to the final json.",
     });
     setTimeout(() => {
-      setButtonState("validated");
+      setButtonState("idle");
     }, 1500);
   };
 
   return (
     <Button onClick={handleSubmit} disabled={!isValid}>
       {buttonState === "idle" && "Save operation"}
-      {buttonState === "validating" && "Validating..."}
       {buttonState === "validated" && (
         <>
           Saved <Check />

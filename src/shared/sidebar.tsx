@@ -11,6 +11,8 @@ import {
 import { Ledger } from "~/icons/ledger";
 import { useErc7730Store } from "~/store/erc7730Provider";
 import SelectOperation from "./selectOperation";
+import { Button } from "~/components/ui/button";
+import { ModeToggle } from "~/components/ui/theme-switcher";
 
 export function AppSidebar() {
   const { getContractAddress } = useErc7730Store((s) => s);
@@ -37,11 +39,20 @@ export function AppSidebar() {
         <SidebarSeparator />
 
         <SidebarGroup>
-          <h2 className="text-sm font-bold">Operation to clearsign</h2>
+          <h2 className="text-sm font-bold">Operation to clear sign</h2>
           <SelectOperation />
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+
+      <SidebarFooter>
+        <SidebarSeparator />
+        <div className="flex flex-col gap-4">
+          <div className="ms-auto">
+            <ModeToggle />
+          </div>
+          <Button className="rounded-full">Review</Button>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }

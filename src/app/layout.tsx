@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Erc7730StoreProvider } from "~/store/erc7730Provider";
 import { Toaster } from "~/components/ui/toaster";
+import { ThemeProvider } from "~/components/ui/theme-provider";
 
 export const metadata: Metadata = {
   title: "Create Erc7730 Json",
@@ -17,11 +18,24 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html
+      lang="en"
+      className={`${GeistSans.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         <TRPCReactProvider>
-          <Erc7730StoreProvider>{children}</Erc7730StoreProvider>
-          <Toaster />
+          <Erc7730StoreProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster />
+            </ThemeProvider>
+          </Erc7730StoreProvider>
         </TRPCReactProvider>
       </body>
     </html>

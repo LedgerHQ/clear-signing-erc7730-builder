@@ -20,6 +20,8 @@ import { removeExcludedFields } from "~/lib/removeExcludedFields";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import FieldForm from "./fieldForm";
 import { Button } from "~/components/ui/button";
+import useOperationStore from "~/store/useOperationStore";
+import { Slash } from "lucide-react";
 
 const FieldParams = z.union([
   DateFieldFormSchema,
@@ -79,6 +81,11 @@ const EditOperation = ({ selectedOperation }: Props) => {
   );
 
   const setOperationData = useErc7730Store((s) => s.setOperationData);
+  const saveOperationData = useErc7730Store((s) => s.saveOperationData);
+
+  const setUpdatedOperation = useOperationStore(
+    (state) => state.setUpdatedOperation,
+  );
 
   const form = useForm<OperationFormType>({
     resolver: zodResolver(OperationFormSchema),
@@ -89,7 +96,9 @@ const EditOperation = ({ selectedOperation }: Props) => {
     },
   });
 
-  const formSteps = form.watch("fields").map((field) => field.path);
+  const { watch } = form;
+
+  const formSteps = watch("fields").map((field) => field.path);
   const [step, setStep] = useState("intent");
 
   useEffect(() => {
@@ -100,6 +109,30 @@ const EditOperation = ({ selectedOperation }: Props) => {
     console.log("defaultValues", defaultValues);
     form.reset(defaultValues);
   }, [operationToEdit, form]);
+
+  useEffect(() => {
+    const subscription = watch(() => {
+      const { intent, fields } = form.getValues();
+
+      if (!operationToEdit) return;
+
+      const updatedOperation = updateOperationFromSchema(operationToEdit, {
+        intent,
+        fields,
+      });
+
+      setUpdatedOperation(selectedOperation);
+      saveOperationData(selectedOperation, updatedOperation);
+    });
+    return () => subscription.unsubscribe();
+  }, [
+    form,
+    operationToEdit,
+    saveOperationData,
+    selectedOperation,
+    watch,
+    setUpdatedOperation,
+  ]);
 
   if (!selectedOperation) return null;
 
@@ -141,15 +174,18 @@ const EditOperation = ({ selectedOperation }: Props) => {
             value={step}
             onValueChange={(value) => setStep(value)}
           >
-            <TabsList className="flew-row mb-6 flex gap-4">
-              {["intent", ...formSteps].map((step) => (
-                <TabsTrigger
-                  className="focus:outline-none data-[state=inactive]:text-neutral-300"
-                  value={step}
-                  key={step}
-                >
-                  {step}
-                </TabsTrigger>
+            <TabsList className="flew-row mb-6 flex items-center gap-2">
+              {["intent", ...formSteps].map((step, index) => (
+                <>
+                  <TabsTrigger
+                    className="focus:outline-none data-[state=inactive]:text-neutral-300 dark:data-[state=inactive]:text-neutral-500"
+                    value={step}
+                    key={step}
+                  >
+                    {step}
+                  </TabsTrigger>
+                  {index !== formSteps.length && <Slash className="h-4" />}
+                </>
               ))}
             </TabsList>
             <TabsContent value="intent">
@@ -158,7 +194,7 @@ const EditOperation = ({ selectedOperation }: Props) => {
                 operationMetadata={operationMetadata}
               />
               <Button onClick={() => formSteps[0] && setStep(formSteps[0])}>
-                Review fields
+                Continue
               </Button>
             </TabsContent>
             {form.watch("fields").map((field, index) => (
@@ -189,17 +225,6 @@ const EditOperation = ({ selectedOperation }: Props) => {
               </TabsContent>
             ))}
           </Tabs>
-
-          {/* <OperationFields form={form} operationToEdit={operationToEdit} /> */}
-          {/* <div className="flex flex-col justify-between gap-4 md:flex-row">
-            {operationToEdit && (
-              <ReviewOperationsButton
-                form={form}
-                operation={operationToEdit}
-                operationMetadata={operationMetadata}
-              />
-            )}
-          </div> */}
         </form>
       </Form>
     </>
