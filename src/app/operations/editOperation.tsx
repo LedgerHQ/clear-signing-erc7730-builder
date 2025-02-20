@@ -4,16 +4,13 @@ import { useErc7730Store } from "~/store/erc7730Provider";
 import { z } from "zod";
 import { Form } from "~/components/ui/form";
 import OperationInformation from "./operationInformation";
-import OperationFields from "./operationFields";
 import { DateFieldFormSchema } from "./fields/dateFieldForm";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { TokenAmountFieldFormSchema } from "./fields/tokenAmountFormField";
 import { NftNameParametersFormSchema } from "./fields/nftNameFieldForm";
 import { AddressNameParametersFormSchema } from "./fields/addressNameFieldForm";
 import { UnitParametersFormSchema } from "./fields/unitFieldForm";
-import { useRouter } from "next/navigation";
 import ValidOperationButton from "./validOperationButton";
-import ReviewOperationsButton from "./reviewOperationsButton";
 import { convertOperationToSchema } from "~/lib/convertOperationToSchema";
 import { updateOperationFromSchema } from "~/lib/updateOperationFromSchema";
 import { removeExcludedFields } from "~/lib/removeExcludedFields";
@@ -176,16 +173,15 @@ const EditOperation = ({ selectedOperation }: Props) => {
           >
             <TabsList className="flew-row mb-6 flex items-center gap-2">
               {["intent", ...formSteps].map((step, index) => (
-                <>
+                <Fragment key={step}>
                   <TabsTrigger
                     className="focus:outline-none data-[state=inactive]:text-neutral-300 dark:data-[state=inactive]:text-neutral-500"
                     value={step}
-                    key={step}
                   >
                     {step}
                   </TabsTrigger>
                   {index !== formSteps.length && <Slash className="h-4" />}
-                </>
+                </Fragment>
               ))}
             </TabsList>
             <TabsContent value="intent">
