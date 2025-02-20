@@ -10,11 +10,13 @@ import {
 } from "~/components/ui/sidebar";
 import { Ledger } from "~/icons/ledger";
 import { useErc7730Store } from "~/store/erc7730Provider";
+import SelectOperation from "./selectOperation";
 
 export function AppSidebar() {
   const { getContractAddress } = useErc7730Store((s) => s);
 
   const address = getContractAddress();
+
   return (
     <Sidebar>
       <SidebarHeader className="flex flex-row items-center">
@@ -34,8 +36,10 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarSeparator />
 
-        <SidebarGroup />
-        <SidebarGroup />
+        <SidebarGroup>
+          <h2 className="text-sm font-bold">Operation to clearsign</h2>
+          <SelectOperation />
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter />
     </Sidebar>

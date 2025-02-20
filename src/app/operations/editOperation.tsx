@@ -3,22 +3,23 @@ import { useForm } from "react-hook-form";
 import { useErc7730Store } from "~/store/erc7730Provider";
 import { z } from "zod";
 import { Form } from "~/components/ui/form";
-import { Button } from "~/components/ui/button";
 import OperationInformation from "./operationInformation";
 import OperationFields from "./operationFields";
 import { DateFieldFormSchema } from "./fields/dateFieldForm";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TokenAmountFieldFormSchema } from "./fields/tokenAmountFormField";
 import { NftNameParametersFormSchema } from "./fields/nftNameFieldForm";
 import { AddressNameParametersFormSchema } from "./fields/addressNameFieldForm";
 import { UnitParametersFormSchema } from "./fields/unitFieldForm";
-import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ValidOperationButton from "./validOperationButton";
 import ReviewOperationsButton from "./reviewOperationsButton";
 import { convertOperationToSchema } from "~/lib/convertOperationToSchema";
 import { updateOperationFromSchema } from "~/lib/updateOperationFromSchema";
 import { removeExcludedFields } from "~/lib/removeExcludedFields";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import FieldForm from "./fieldForm";
+import { Button } from "~/components/ui/button";
 
 const FieldParams = z.union([
   DateFieldFormSchema,
@@ -79,8 +80,6 @@ const EditOperation = ({ selectedOperation }: Props) => {
 
   const setOperationData = useErc7730Store((s) => s.setOperationData);
 
-  const router = useRouter();
-
   const form = useForm<OperationFormType>({
     resolver: zodResolver(OperationFormSchema),
     mode: "onChange",
@@ -89,6 +88,9 @@ const EditOperation = ({ selectedOperation }: Props) => {
       fields: [],
     },
   });
+
+  const formSteps = form.watch("fields").map((field) => field.path);
+  const [step, setStep] = useState("intent");
 
   useEffect(() => {
     if (!operationToEdit) return;
@@ -119,36 +121,88 @@ const EditOperation = ({ selectedOperation }: Props) => {
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-        className="space-y-8"
-      >
-        <OperationInformation
-          form={form}
-          operationMetadata={operationMetadata}
+    <>
+      <div className="mb-10 flex w-full items-center justify-between">
+        <h1 className="text-2xl font-bold">{selectedOperation}</h1>
+        <ValidOperationButton
+          isValid={form.formState.isValid}
+          onClick={form.handleSubmit(onSubmit)}
         />
-        <OperationFields form={form} operationToEdit={operationToEdit} />
-        <div className="flex flex-col justify-between gap-4 md:flex-row">
-          {operationToEdit && (
-            <ReviewOperationsButton
-              form={form}
-              operation={operationToEdit}
-              operationMetadata={operationMetadata}
-            />
-          )}
-          <ValidOperationButton
-            isValid={form.formState.isValid}
-            onClick={form.handleSubmit(onSubmit)}
-          />
-          <Button onClick={() => router.push("/review")}>
-            review <ArrowRight />
-          </Button>
-        </div>
-      </form>
-    </Form>
+      </div>
+      <Form {...form}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <Tabs
+            defaultValue="tab1"
+            orientation="horizontal"
+            value={step}
+            onValueChange={(value) => setStep(value)}
+          >
+            <TabsList className="flew-row mb-6 flex gap-4">
+              {["intent", ...formSteps].map((step) => (
+                <TabsTrigger
+                  className="focus:outline-none data-[state=inactive]:text-neutral-300"
+                  value={step}
+                  key={step}
+                >
+                  {step}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <TabsContent value="intent">
+              <OperationInformation
+                form={form}
+                operationMetadata={operationMetadata}
+              />
+              <Button onClick={() => formSteps[0] && setStep(formSteps[0])}>
+                Review fields
+              </Button>
+            </TabsContent>
+            {form.watch("fields").map((field, index) => (
+              <TabsContent value={field.path} key={field.path}>
+                <FieldForm
+                  field={field}
+                  form={form}
+                  index={index}
+                  operation={operationToEdit}
+                />
+                <div className="mt-4 flex justify-between">
+                  <Button
+                    onClick={() =>
+                      index > 0
+                        ? setStep(formSteps[index - 1] ?? "intent")
+                        : setStep("intent")
+                    }
+                  >
+                    Previous
+                  </Button>
+
+                  {index < formSteps.length - 1 && (
+                    <Button onClick={() => setStep(formSteps[index + 1] ?? "")}>
+                      Next
+                    </Button>
+                  )}
+                </div>
+              </TabsContent>
+            ))}
+          </Tabs>
+
+          {/* <OperationFields form={form} operationToEdit={operationToEdit} /> */}
+          {/* <div className="flex flex-col justify-between gap-4 md:flex-row">
+            {operationToEdit && (
+              <ReviewOperationsButton
+                form={form}
+                operation={operationToEdit}
+                operationMetadata={operationMetadata}
+              />
+            )}
+          </div> */}
+        </form>
+      </Form>
+    </>
   );
 };
 

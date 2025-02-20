@@ -39,11 +39,11 @@ const ValidOperationButton = ({ onClick, isValid }: Props) => {
 
   return (
     <Button onClick={handleSubmit} disabled={!isValid}>
-      {buttonState === "idle" && "Valid operation"}
+      {buttonState === "idle" && "Save operation"}
       {buttonState === "validating" && "Validating..."}
       {buttonState === "validated" && (
         <>
-          Validated <Check />
+          Saved <Check />
         </>
       )}
     </Button>

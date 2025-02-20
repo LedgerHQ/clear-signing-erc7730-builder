@@ -1,8 +1,7 @@
 import { HydrateClient } from "~/trpc/server";
 import MetadataForm from "./metaDataForm";
-import ToolBox from "~/components/utils/toolBox";
 import { SidebarProvider } from "~/components/ui/sidebar";
-import { AppSidebar } from "./sidebar";
+import { AppSidebar } from "~/shared/sidebar";
 
 export default async function Home() {
   return (

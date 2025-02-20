@@ -8,19 +8,23 @@ import { type OperationFormType } from "./editOperation";
 interface Props {
   operation: Operation;
   form: UseFormReturn<OperationFormType>;
+  activeFieldPath: string;
 }
 
-const OperationScreens = ({ operation, form }: Props) => {
+const OperationScreens = ({ operation, form, activeFieldPath }: Props) => {
   const { fields } = form.watch();
 
   if (fields.length === 0) return null;
 
-  const screens = getScreensForOperation({
-    ...operation,
-    fields: fields.filter((field) => field.isIncluded),
-  });
+  const screens = getScreensForOperation(
+    {
+      ...operation,
+      fields: fields.filter((field) => field.isIncluded),
+    },
+    activeFieldPath,
+  );
 
-  console.log(fields);
+  console.log(fields, activeFieldPath);
 
   const totalPages = screens.length + 1;
 

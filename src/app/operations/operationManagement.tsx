@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
 import { Erc7730StoreContext, useErc7730Store } from "~/store/erc7730Provider";
-import SelectOperation from "~/shared/selectOperation";
 import EditOperation from "./editOperation";
 import useOperationStore from "~/store/useOperationStore";
 
@@ -25,14 +24,16 @@ const OperationsManagement = () => {
     return <div>Loading...</div>;
   }
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-end justify-between">
-        <SelectOperation />
+  if (selectedOperation === null)
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        Select an operation to clear sign first
       </div>
-      {selectedOperation && (
-        <EditOperation selectedOperation={selectedOperation} />
-      )}
+    );
+
+  return (
+    <div className="w-full p-10">
+      <EditOperation selectedOperation={selectedOperation} />
     </div>
   );
 };

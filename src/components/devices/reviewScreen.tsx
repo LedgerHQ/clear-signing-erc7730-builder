@@ -14,10 +14,13 @@ export const ReviewScreen = ({ screen }: { screen: DisplayItem[] }) => {
     >
       {screen
         .filter((t) => t)
-        .map(({ label, displayValue }, index) => (
-          <div key={`${label}-field-${index}`}>
+        .map(({ label, displayValue, isActive }, index) => (
+          <div
+            key={`${label}-field-${index}`}
+            className={cn("text-black/30", isActive && "text-black")}
+          >
             <Device.ContentText>
-              <span className="text-dark-grey">{label}</span>
+              <span>{label}</span>
             </Device.ContentText>
             <Device.HeadingText>{displayValue}</Device.HeadingText>
           </div>

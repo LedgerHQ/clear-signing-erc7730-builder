@@ -5,12 +5,16 @@ import { type Operation } from "~/store/types";
 const ITEM_PER_SCREEN = 4;
 export interface DisplayItem {
   label: string;
+  isActive?: boolean;
   displayValue: string;
 }
 
 export type Screen = DisplayItem[];
 
-export const getScreensForOperation = (operation: Operation) => {
+export const getScreensForOperation = (
+  operation: Operation,
+  activeFieldPath: string,
+) => {
   const displays = operation.fields.filter((field) => {
     const label = field && "label" in field ? field.label : undefined;
 
@@ -34,6 +38,7 @@ export const getScreensForOperation = (operation: Operation) => {
 
     screen.push({
       label,
+      isActive: activeFieldPath === displayItem.path,
       displayValue:
         "format" in displayItem
           ? matchFieldFormatToMockData(
@@ -54,6 +59,7 @@ export const getScreensForOperation = (operation: Operation) => {
 
 export const getScreensForForm = (
   formFields: OperationFormType["fields"],
+  activeFieldPath: string,
 ): Screen[] => {
   const screens: Screen[] = [];
 
@@ -63,6 +69,7 @@ export const getScreensForForm = (
     if (field.isIncluded) {
       screen.push({
         label: field.label,
+        isActive: activeFieldPath === field.path,
         displayValue: matchFieldFormatToMockData(
           field.format ?? "raw",
           field.params,

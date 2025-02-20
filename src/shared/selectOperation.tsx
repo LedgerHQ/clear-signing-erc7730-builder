@@ -1,16 +1,8 @@
 "use client";
 
-import { Label } from "@radix-ui/react-label";
 import { useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@radix-ui/react-radio-group";
+import { Label } from "@radix-ui/react-label";
 import { cn } from "~/lib/utils";
 import { useErc7730Store } from "~/store/erc7730Provider";
 import useOperationStore from "~/store/useOperationStore";
@@ -24,38 +16,40 @@ const SelectOperation = () => {
     void useOperationStore.persist.rehydrate();
   }, []);
 
+  if (!operation?.formats) return null;
+
   return (
-    <div className="flex w-full flex-col gap-1">
-      <Label>Operation to clear sign</Label>
-      <Select
-        onValueChange={setSelectedOperation}
-        value={selectedOperation ?? undefined}
-      >
-        <SelectTrigger className="w-auto text-ellipsis lg:w-[420px]">
-          <SelectValue placeholder="Select a Operation" />
-        </SelectTrigger>
-        <SelectContent className="w-auto">
-          <SelectGroup>
-            <SelectLabel>Operation</SelectLabel>
-            {operation?.formats &&
-              Object.entries(operation.formats).map(([operationName]) => (
-                <SelectItem value={operationName} key={operationName}>
-                  <div key={operationName}>
-                    <h3
-                      className={cn({
-                        "bg-green-200":
-                          validateOperation.includes(operationName),
-                      })}
-                    >
-                      {operationName}
-                    </h3>
-                  </div>
-                </SelectItem>
-              ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
+    <RadioGroup
+      value={selectedOperation ?? ""}
+      onValueChange={setSelectedOperation}
+      className="flex flex-col gap-2"
+    >
+      {operation.formats &&
+        Object.entries(operation.formats).map(([operationName]) => (
+          <RadioGroupItem
+            key={operationName}
+            value={operationName}
+            className={cn(
+              "overflow-hidden rounded-lg p-3 focus:outline-none",
+              validateOperation.includes(operationName) &&
+                "bg-green-100/90 text-[#6EB260]/90",
+              selectedOperation === operationName &&
+                "bg-black/5 ring-black/10 dark:bg-white/5",
+            )}
+          >
+            <div className="flex w-full items-center justify-between">
+              <div className="text-sm/6">
+                <Label
+                  htmlFor={operationName}
+                  className={cn("cursor-pointer font-semibold")}
+                >
+                  {operationName}
+                </Label>
+              </div>
+            </div>
+          </RadioGroupItem>
+        ))}
+    </RadioGroup>
   );
 };
 

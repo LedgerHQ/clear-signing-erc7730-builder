@@ -96,8 +96,6 @@ const MetadataForm = () => {
       <div className="mb-20 flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Metadata</h1>
         <Button onClick={form.handleSubmit(onSubmit)}>Continue</Button>
-
-        {/* <ToolBox /> */}
       </div>
       <Form {...form}>
         <form
