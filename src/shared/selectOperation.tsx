@@ -40,7 +40,7 @@ const SelectOperation = () => {
               updatedOperation.includes(operationName) &&
                 "bg-orange-300/10 text-orange-500/90",
               validateOperation.includes(operationName) &&
-                "bg-green-100/90 text-[#6EB260]/90",
+                "bg-green-100/90 text-[#6EB260]/90 dark:bg-green-100/10",
             )}
           >
             <div className="flex w-full items-center justify-between">

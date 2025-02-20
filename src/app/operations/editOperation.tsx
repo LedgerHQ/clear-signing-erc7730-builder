@@ -105,6 +105,7 @@ const EditOperation = ({ selectedOperation }: Props) => {
 
     console.log("defaultValues", defaultValues);
     form.reset(defaultValues);
+    setStep("intent");
   }, [operationToEdit, form]);
 
   useEffect(() => {
