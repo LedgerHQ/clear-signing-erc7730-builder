@@ -105,8 +105,11 @@ const EditOperation = ({ selectedOperation }: Props) => {
 
     console.log("defaultValues", defaultValues);
     form.reset(defaultValues);
-    setStep("intent");
   }, [operationToEdit, form]);
+
+  useEffect(() => {
+    setStep("intent");
+  }, [selectedOperation]);
 
   useEffect(() => {
     const subscription = watch(() => {

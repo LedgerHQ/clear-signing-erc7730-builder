@@ -13,11 +13,17 @@ import { useErc7730Store } from "~/store/erc7730Provider";
 import SelectOperation from "./selectOperation";
 import { Button } from "~/components/ui/button";
 import { ModeToggle } from "~/components/ui/theme-switcher";
+import { useRouter } from "next/navigation";
+import useOperationStore from "~/store/useOperationStore";
 
 export function AppSidebar() {
   const { getContractAddress } = useErc7730Store((s) => s);
+  const router = useRouter();
+  const { validateOperation } = useOperationStore();
 
   const address = getContractAddress();
+
+  const isReviewAccessible = validateOperation.length > 0;
 
   return (
     <Sidebar>
@@ -50,7 +56,13 @@ export function AppSidebar() {
           <div className="ms-auto">
             <ModeToggle />
           </div>
-          <Button className="rounded-full">Review</Button>
+          <Button
+            className="rounded-full"
+            disabled={!isReviewAccessible}
+            onClick={() => router.push("/review")}
+          >
+            Review
+          </Button>
         </div>
       </SidebarFooter>
     </Sidebar>
