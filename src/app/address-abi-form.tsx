@@ -57,7 +57,7 @@ const CardErc7730 = () => {
     <div className="w-full lg:w-[580px]">
       <form onSubmit={handleSubmit} className="mb-4 flex w-full flex-col gap-4">
         <Tabs defaultValue="address" onValueChange={onTabChange}>
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="mb-10 grid w-full grid-cols-2">
             <TabsTrigger value="address">Contract Address</TabsTrigger>
             <TabsTrigger value="abi">ABI</TabsTrigger>
           </TabsList>

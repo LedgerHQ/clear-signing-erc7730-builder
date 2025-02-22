@@ -17,14 +17,8 @@ import {
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import Devices from "./devices";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "~/components/ui/drawer";
 import { Erc7730StoreContext, useErc7730Store } from "~/store/erc7730Provider";
+import { Card } from "~/components/ui/card";
 
 const metaDataSchema = z.object({
   owner: z.string().min(1, {
@@ -95,60 +89,65 @@ const MetadataForm = () => {
     <>
       <div className="mb-20 flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Metadata</h1>
-        <Button onClick={form.handleSubmit(onSubmit)}>Continue</Button>
       </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="grid grid-cols-2 gap-10"
         >
-          <div className="flex flex-col gap-6">
-            <FormField
-              control={form.control}
-              name="owner"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contract owner</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="legalName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Legal Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Url</FormLabel>
-                  <FormDescription>
-                    Where to find information on the entity the user interacts
-                    with.
-                  </FormDescription>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
+          <div>
+            <Card className="mb-40 flex h-fit flex-col gap-6 p-6">
+              <FormField
+                control={form.control}
+                name="owner"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Contract owner</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="legalName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Legal Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="url"
+                render={({ field }) => (
+                  <FormItem>
+                    <div>
+                      <FormLabel>URL</FormLabel>
+                      <FormDescription>
+                        Where to find information on the entity the user
+                        interacts with.
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </Card>
+            <div className="flex w-full items-center justify-end">
+              <Button onClick={form.handleSubmit(onSubmit)}>Continue</Button>
+            </div>
           </div>
-
           {metadata && (
             <div className="hidden flex-row justify-between lg:flex">
               <Devices metadata={metadata} address={address} />

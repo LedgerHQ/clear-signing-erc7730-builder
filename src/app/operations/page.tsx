@@ -8,7 +8,9 @@ export default async function Functions() {
     <HydrateClient>
       <SidebarProvider>
         <AppSidebar />
-        <OperationManagement />
+        <div className="container mx-auto flex p-4">
+          <OperationManagement />
+        </div>
       </SidebarProvider>
     </HydrateClient>
   );

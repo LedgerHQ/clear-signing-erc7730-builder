@@ -18,7 +18,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import FieldForm from "./fieldForm";
 import { Button } from "~/components/ui/button";
 import useOperationStore from "~/store/useOperationStore";
-import { Slash } from "lucide-react";
+import { Divide, Slash } from "lucide-react";
+import { SidebarSeparator } from "~/components/ui/sidebar";
 
 const FieldParams = z.union([
   DateFieldFormSchema,
@@ -156,12 +157,8 @@ const EditOperation = ({ selectedOperation }: Props) => {
 
   return (
     <>
-      <div className="mb-10 flex w-full items-center justify-between">
+      <div className="mb-4 flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">{selectedOperation}</h1>
-        <ValidOperationButton
-          isValid={form.formState.isValid}
-          onClick={form.handleSubmit(onSubmit)}
-        />
       </div>
       <Form {...form}>
         <form
@@ -175,7 +172,7 @@ const EditOperation = ({ selectedOperation }: Props) => {
             value={step}
             onValueChange={(value) => setStep(value)}
           >
-            <TabsList className="flew-row mb-6 flex items-center gap-2">
+            <TabsList className="flew-row mb-6 flex items-center gap-1">
               {["intent", ...formSteps].map((step, index) => (
                 <Fragment key={step}>
                   <TabsTrigger
@@ -188,14 +185,14 @@ const EditOperation = ({ selectedOperation }: Props) => {
                 </Fragment>
               ))}
             </TabsList>
+            <SidebarSeparator className="mb-10" />
+
             <TabsContent value="intent">
               <OperationInformation
                 form={form}
                 operationMetadata={operationMetadata}
+                onContinue={() => setStep(formSteps[0] ?? "")}
               />
-              <Button onClick={() => formSteps[0] && setStep(formSteps[0])}>
-                Continue
-              </Button>
             </TabsContent>
             {form.watch("fields").map((field, index) => (
               <TabsContent value={field.path} key={field.path}>
@@ -204,24 +201,22 @@ const EditOperation = ({ selectedOperation }: Props) => {
                   form={form}
                   index={index}
                   operation={operationToEdit}
+                  onPrevious={() =>
+                    index > 0
+                      ? setStep(formSteps[index - 1] ?? "intent")
+                      : setStep("intent")
+                  }
+                  onContinue={
+                    formSteps[index + 1]
+                      ? () => setStep(formSteps[index + 1] ?? "")
+                      : undefined
+                  }
+                  onLast={
+                    formSteps[index + 1]
+                      ? undefined
+                      : form.handleSubmit(onSubmit)
+                  }
                 />
-                <div className="mt-4 flex w-1/2 justify-between">
-                  <Button
-                    onClick={() =>
-                      index > 0
-                        ? setStep(formSteps[index - 1] ?? "intent")
-                        : setStep("intent")
-                    }
-                  >
-                    Previous
-                  </Button>
-
-                  {index < formSteps.length - 1 && (
-                    <Button onClick={() => setStep(formSteps[index + 1] ?? "")}>
-                      Continue
-                    </Button>
-                  )}
-                </div>
               </TabsContent>
             ))}
           </Tabs>

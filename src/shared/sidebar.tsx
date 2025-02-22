@@ -7,23 +7,29 @@ import {
   SidebarFooter,
   Sidebar,
   SidebarSeparator,
+  SidebarMenu,
 } from "~/components/ui/sidebar";
 import { Ledger } from "~/icons/ledger";
 import { useErc7730Store } from "~/store/erc7730Provider";
 import SelectOperation from "./selectOperation";
 import { Button } from "~/components/ui/button";
 import { ModeToggle } from "~/components/ui/theme-switcher";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import useOperationStore from "~/store/useOperationStore";
+import ResetButton from "./resetButton";
 
 export function AppSidebar() {
   const { getContractAddress } = useErc7730Store((s) => s);
   const router = useRouter();
+  const pathname = usePathname();
+
   const { validateOperation } = useOperationStore();
 
   const address = getContractAddress();
 
   const isReviewAccessible = validateOperation.length > 0;
+
+  const isOperation = pathname === "/operations";
 
   return (
     <Sidebar>
@@ -44,18 +50,34 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarSeparator />
 
-        <SidebarGroup>
-          <h2 className="text-sm font-bold">Operation to clear sign</h2>
-          <SelectOperation />
-        </SidebarGroup>
+        {isOperation && (
+          <>
+            <SidebarGroup>
+              <SidebarMenu onClick={() => router.push("/metadata")}>
+                <div className="cursor-pointer break-words rounded border border-neutral-300 bg-black/5 p-3 text-sm">
+                  Metadata
+                </div>
+              </SidebarMenu>
+            </SidebarGroup>
+
+            <SidebarSeparator />
+
+            <SidebarGroup>
+              <h2 className="mb-4 text-sm font-bold">
+                Operation to clear sign
+              </h2>
+              <SelectOperation />
+            </SidebarGroup>
+          </>
+        )}
       </SidebarContent>
 
       <SidebarFooter>
-        <SidebarSeparator />
         <div className="flex flex-col gap-4">
           <div className="ms-auto">
             <ModeToggle />
           </div>
+          <ResetButton />
           <Button
             className="rounded-full"
             disabled={!isReviewAccessible}

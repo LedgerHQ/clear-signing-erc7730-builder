@@ -16,13 +16,8 @@ import { type Operation } from "~/store/types";
 import FieldSelector from "./fields/fieldSelector";
 import { Trash } from "lucide-react";
 import OperationScreens from "./operationScreens";
-
-interface Props {
-  form: UseFormReturn<OperationFormType>;
-  operation: Operation | null;
-  field: Operation["fields"][number];
-  index: number;
-}
+import { Card } from "~/components/ui/card";
+import ValidOperationButton from "./validOperationButton";
 
 const FieldNotIncluded = ({
   form,
@@ -61,8 +56,7 @@ const FieldHeader = ({
       control={form.control}
       name={`fields.${index}.isIncluded`}
       render={({ field }) => (
-        <Button variant="destructive" onClick={() => field.onChange(false)}>
-          Remove
+        <Button variant="outline" onClick={() => field.onChange(false)}>
           <Trash />
         </Button>
       )}
@@ -116,7 +110,25 @@ const FieldRequiredSwitch = ({
   />
 );
 
-const FieldForm = ({ field, form, index, operation }: Props) => {
+interface Props {
+  form: UseFormReturn<OperationFormType>;
+  operation: Operation | null;
+  field: Operation["fields"][number];
+  index: number;
+  onContinue?: () => void;
+  onPrevious?: () => void;
+  onLast?: () => void;
+}
+
+const FieldForm = ({
+  field,
+  form,
+  index,
+  operation,
+  onContinue,
+  onPrevious,
+  onLast,
+}: Props) => {
   const { isIncluded, path } = form.watch(`fields.${index}`);
 
   if (!operation) return null;
@@ -127,13 +139,23 @@ const FieldForm = ({ field, form, index, operation }: Props) => {
         {!isIncluded ? (
           <FieldNotIncluded form={form} index={index} />
         ) : (
-          <>
+          <Card className="flex flex-col gap-4 p-6">
             <FieldHeader field={field} form={form} index={index} />
             <FieldLabelInput form={form} index={index} />
             <FieldRequiredSwitch form={form} index={index} />
             <FieldSelector field={field} form={form} index={index} />
-          </>
+          </Card>
         )}
+        <div className="mt-10 flex justify-between">
+          {onPrevious && <Button onClick={onPrevious}>Previous</Button>}
+          {onContinue && <Button onClick={onContinue}>Continue</Button>}
+          {onLast && (
+            <ValidOperationButton
+              isValid={form.formState.isValid}
+              onClick={onLast}
+            />
+          )}
+        </div>
       </div>
       <OperationScreens
         form={form}

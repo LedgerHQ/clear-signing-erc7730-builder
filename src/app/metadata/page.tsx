@@ -9,8 +9,10 @@ export default async function Home() {
       <SidebarProvider>
         <AppSidebar />
 
-        <div className="w-full p-10">
-          <MetadataForm />
+        <div className="container mx-auto flex p-4">
+          <div className="w-full p-10">
+            <MetadataForm />
+          </div>
         </div>
       </SidebarProvider>
     </HydrateClient>
