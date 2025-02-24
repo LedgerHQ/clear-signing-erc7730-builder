@@ -11,15 +11,19 @@ type Action = {
   setSelectedOperation: (selectedOperation: State["selectedOperation"]) => void;
   setValidateOperation: (f: string) => void;
   setUpdatedOperation: (f: string) => void;
+  reset: () => void;
+};
+
+const initialState: State = {
+  validateOperation: [],
+  updatedOperation: [],
+  selectedOperation: null,
 };
 
 export const useOperationStore = create<State & Action>()(
   persist(
     (set) => ({
-      validateOperation: [],
-      toto: [],
-      updatedOperation: [],
-      selectedOperation: null,
+      ...initialState,
       setValidateOperation: (operation) =>
         set((state) => ({
           validateOperation: state.validateOperation.includes(operation)
@@ -34,7 +38,11 @@ export const useOperationStore = create<State & Action>()(
         })),
       setSelectedOperation: (selectedOperation) =>
         set(() => ({ selectedOperation })),
+      reset: () => {
+        set(initialState);
+      },
     }),
+
     {
       storage: createJSONStorage(() => sessionStorage),
       name: "store-Operation",

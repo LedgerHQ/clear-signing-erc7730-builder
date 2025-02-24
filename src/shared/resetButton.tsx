@@ -9,11 +9,12 @@ import { useRouter } from "next/navigation";
 
 const ResetButton = () => {
   const clearStorage = useContext(Erc7730StoreContext)?.persist;
+  const { reset: resetFunctionStore } = useFunctionStore();
   const router = useRouter();
 
-  const reset = () => {
+  const reset = async () => {
     clearStorage?.clearStorage();
-    useFunctionStore.persist.clearStorage();
+    resetFunctionStore();
     router.push("/");
   };
 

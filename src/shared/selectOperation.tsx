@@ -18,8 +18,10 @@ const SelectOperation = () => {
 
   useEffect(() => {
     void useOperationStore.persist.rehydrate();
+    void useOperationStore.persist.rehydrate();
   }, []);
 
+  if (!useOperationStore.persist.hasHydrated()) return null;
   if (!operation?.formats) return null;
 
   return (
