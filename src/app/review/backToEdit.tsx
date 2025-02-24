@@ -14,7 +14,7 @@ const BackToEdit = () => {
         router.push("/operations");
       }}
     >
-      <ArrowBigLeft /> Edit
+      Back to edit
     </Button>
   );
 };

@@ -159,6 +159,7 @@ const FieldForm = ({
       </div>
       <OperationScreens
         form={form}
+        allScreenActive={false}
         activeFieldPath={path}
         operation={operation}
       />

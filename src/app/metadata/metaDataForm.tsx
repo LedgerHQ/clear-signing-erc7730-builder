@@ -22,13 +22,13 @@ import { Card } from "~/components/ui/card";
 
 const metaDataSchema = z.object({
   owner: z.string().min(1, {
-    message: "Owner is required. Please enter the owner's name.",
+    message: "Contract owner name is required.",
   }),
   url: z.string().min(1, {
-    message: "URL is required. Please enter a valid URL.",
+    message: "URL is required.",
   }),
   legalName: z.string().min(1, {
-    message: "Legal name is required. Please enter the legal name.",
+    message: "Legal name is required.",
   }),
 });
 
@@ -102,7 +102,7 @@ const MetadataForm = () => {
                 name="owner"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Contract owner</FormLabel>
+                    <FormLabel>Contract owner name</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>

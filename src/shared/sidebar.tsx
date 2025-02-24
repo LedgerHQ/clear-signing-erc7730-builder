@@ -8,6 +8,7 @@ import {
   Sidebar,
   SidebarSeparator,
   SidebarMenu,
+  SidebarMenuButton,
 } from "~/components/ui/sidebar";
 import { Ledger } from "~/icons/ledger";
 import { useErc7730Store } from "~/store/erc7730Provider";
@@ -53,10 +54,10 @@ export function AppSidebar() {
         {isOperation && (
           <>
             <SidebarGroup>
-              <SidebarMenu onClick={() => router.push("/metadata")}>
-                <div className="cursor-pointer break-words rounded border border-neutral-300 bg-black/5 p-3 text-sm">
+              <SidebarMenu>
+                <SidebarMenuButton onClick={() => router.push("/metadata")}>
                   Metadata
-                </div>
+                </SidebarMenuButton>
               </SidebarMenu>
             </SidebarGroup>
 

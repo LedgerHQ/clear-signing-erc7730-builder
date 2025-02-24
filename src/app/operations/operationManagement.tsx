@@ -26,7 +26,7 @@ const OperationsManagement = () => {
 
   if (selectedOperation === null)
     return (
-      <div className="flex h-screen w-full items-center justify-center">
+      <div className="flex h-screen w-full items-center justify-center text-xl">
         Select an operation to clear sign first
       </div>
     );

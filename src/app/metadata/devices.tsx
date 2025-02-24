@@ -2,6 +2,7 @@ import { Device } from "~/components/devices/device";
 import { TitleScreen } from "~/components/devices/titleScreen";
 import { InfoScreen } from "~/components/devices/infoScreen";
 import { type Erc7730 } from "~/store/types";
+import { MetadataInfoScreen } from "~/components/devices/metaDataScreen";
 
 interface Props {
   metadata?: Erc7730["metadata"];
@@ -10,19 +11,13 @@ interface Props {
 
 const Devices = ({ metadata, address }: Props) => {
   return (
-    <>
-      <Device.Frame>
-        <TitleScreen
-          functionName={"{functionName}"}
-          type={"transaction"}
-          owner={metadata?.owner ?? ""}
-        />
-        <Device.Pagination current={1} total={1} />
-      </Device.Frame>
-      <Device.Frame>
-        <InfoScreen info={metadata?.info} address={address ?? ""} />
-      </Device.Frame>
-    </>
+    <Device.Frame>
+      <MetadataInfoScreen
+        owner={metadata?.owner ?? ""}
+        info={metadata?.info}
+        address={address ?? ""}
+      />
+    </Device.Frame>
   );
 };
 

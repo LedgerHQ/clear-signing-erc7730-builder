@@ -22,11 +22,7 @@ export function ReviewJson() {
 
   return (
     <ResponsiveDialog
-      dialogTrigger={
-        <Button variant="outline">
-          <FileJson /> Submit
-        </Button>
-      }
+      dialogTrigger={<Button variant="outline">Submit</Button>}
       dialogTitle="Submit your JSON"
       open={open}
       setOpen={setOpen}

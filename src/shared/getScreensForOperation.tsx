@@ -13,7 +13,7 @@ export type Screen = DisplayItem[];
 
 export const getScreensForOperation = (
   operation: Operation,
-  activeFieldPath: string,
+  activeFieldPath?: string,
 ) => {
   const displays = operation.fields.filter((field) => {
     const label = field && "label" in field ? field.label : undefined;
@@ -38,7 +38,8 @@ export const getScreensForOperation = (
 
     screen.push({
       label,
-      isActive: activeFieldPath === displayItem.path,
+      isActive:
+        activeFieldPath === displayItem.path || activeFieldPath === undefined,
       displayValue:
         "format" in displayItem
           ? matchFieldFormatToMockData(

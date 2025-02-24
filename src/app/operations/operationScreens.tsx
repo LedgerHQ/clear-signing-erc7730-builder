@@ -9,6 +9,7 @@ interface Props {
   operation: Operation;
   form: UseFormReturn<OperationFormType>;
   activeFieldPath: string;
+  allScreenActive: boolean;
 }
 
 const OperationScreens = ({ operation, form, activeFieldPath }: Props) => {

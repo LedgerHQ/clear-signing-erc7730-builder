@@ -9,7 +9,7 @@ import { Stax } from "./stax";
 import { Flex } from "./flex";
 
 export const Device = {
-  ActionText: ({ children }: { children: string }) => {
+  ActionText: ({ children }: { children: ReactNode }) => {
     const isStax = false;
 
     return (
