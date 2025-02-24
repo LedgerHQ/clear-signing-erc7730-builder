@@ -9,7 +9,6 @@ import useOperationStore from "~/store/useOperationStore";
 const OperationsManagement = () => {
   const router = useRouter();
   const hasHydrated = useContext(Erc7730StoreContext)?.persist?.hasHydrated();
-  const hasHydratedOperationStore = useOperationStore?.persist?.hasHydrated();
 
   const { getOperations } = useErc7730Store((s) => s);
   const operations = getOperations();
@@ -21,7 +20,7 @@ const OperationsManagement = () => {
     }
   }, [operations, router, hasHydrated]);
 
-  if (hasHydrated !== true && hasHydratedOperationStore !== true) {
+  if (hasHydrated !== true) {
     return <div>Loading...</div>;
   }
 

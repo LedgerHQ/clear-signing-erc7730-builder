@@ -21,7 +21,7 @@ const SelectOperation = () => {
     void useOperationStore.persist.rehydrate();
   }, []);
 
-  if (!useOperationStore.persist.hasHydrated()) return null;
+  if (!useOperationStore?.persist?.hasHydrated()) return null;
   if (!operation?.formats) return null;
 
   return (
