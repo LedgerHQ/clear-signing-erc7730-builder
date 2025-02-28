@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description: "Clear sign all the things",
     images: [
       {
-        url: "/openGraphImage.png", // Replace with the actual path to your image
+        url: "/openGraphImage.png",
         width: 1200,
         height: 630,
       },
