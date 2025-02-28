@@ -14,6 +14,18 @@ export const metadata: Metadata = {
   title: "Create Erc7730 Json",
   description: "Clear sign all the things",
   icons: [{ rel: "icon", url: "/ledger-logo-short-black.svg" }],
+  openGraph: {
+    title: "Create Erc7730 Json",
+    description: "Clear sign all the things",
+    images: [
+      {
+        url: "/openGraphImage", // Replace with the actual path to your image
+        width: 1200,
+        height: 630,
+      },
+    ],
+    type: "website",
+  },
 };
 
 const GTM_ID = env.NEXT_PUBLIC_GTM;
