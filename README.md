@@ -25,3 +25,7 @@ The project is runing with this core technologies
 - [shadcn](https://ui.shadcn.com/)
 - [tanstack](https://tanstack.com/)
 - [zustand](https://zustand-demo.pmnd.rs/)
+
+# Copyright and license
+
+This code is Copyright LEDGER SAS 2024 and published under the Apache-2.0 license.
