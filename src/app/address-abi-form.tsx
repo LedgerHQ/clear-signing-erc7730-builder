@@ -44,7 +44,7 @@ const CardErc7730 = () => {
       useFunctionStore.persist.clearStorage();
 
       setErc7730(erc7730);
-      router.push("/metadata");
+      router.push("/chains");
     }
   };
 

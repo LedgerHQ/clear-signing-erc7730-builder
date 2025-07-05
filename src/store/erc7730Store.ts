@@ -22,6 +22,10 @@ export interface Erc7730Store {
     operationData: Operation,
     filteredOperationData: Operation,
   ) => void;
+  getDeployments: () => Array<{ chainId: number; address: string }>;
+  setDeployments: (
+    deployments: Array<{ chainId: number; address: string }>,
+  ) => void;
 }
 
 export const createErc7730Store = () => {
@@ -160,6 +164,43 @@ export const createErc7730Store = () => {
                 : { formats: {} },
             },
           })),
+        getDeployments: () => {
+          const { generatedErc7730 } = get();
+          const context = generatedErc7730?.context;
+          if (!context || !("contract" in context)) return [];
+          return context.contract.deployments || [];
+        },
+        setDeployments: (deployments) =>
+          set((state) => {
+            const generatedContext = state.generatedErc7730!.context;
+            const finalContext = state.finalErc7730!.context;
+
+            if ("contract" in generatedContext && "contract" in finalContext) {
+              return {
+                generatedErc7730: {
+                  ...state.generatedErc7730!,
+                  context: {
+                    ...generatedContext,
+                    contract: {
+                      ...generatedContext.contract,
+                      deployments,
+                    },
+                  },
+                },
+                finalErc7730: {
+                  ...state.finalErc7730!,
+                  context: {
+                    ...finalContext,
+                    contract: {
+                      ...finalContext.contract,
+                      deployments,
+                    },
+                  },
+                },
+              };
+            }
+            return state;
+          }),
       }),
 
       {
