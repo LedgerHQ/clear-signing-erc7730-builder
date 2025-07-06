@@ -173,9 +173,8 @@ export const createErc7730Store = () => {
         setDeployments: (deployments) =>
           set((state) => {
             const generatedContext = state.generatedErc7730!.context;
-            const finalContext = state.finalErc7730!.context;
 
-            if ("contract" in generatedContext && "contract" in finalContext) {
+            if ("contract" in generatedContext) {
               return {
                 generatedErc7730: {
                   ...state.generatedErc7730!,
@@ -188,14 +187,21 @@ export const createErc7730Store = () => {
                   },
                 },
                 finalErc7730: {
-                  ...state.finalErc7730!,
+                  $schema: state.generatedErc7730!.$schema,
                   context: {
-                    ...finalContext,
+                    ...generatedContext,
                     contract: {
-                      ...finalContext.contract,
+                      ...generatedContext.contract,
                       deployments,
                     },
                   },
+                  metadata: state.generatedErc7730!.metadata,
+                  display: state.finalErc7730
+                    ? {
+                        ...state.finalErc7730.display,
+                        formats: state.finalErc7730.display.formats ?? {},
+                      }
+                    : { formats: {} },
                 },
               };
             }
