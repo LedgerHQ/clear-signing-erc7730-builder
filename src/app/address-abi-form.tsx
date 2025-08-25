@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useErc7730Store } from "~/store/erc7730Provider";
 import useFunctionStore from "~/store/useOperationStore";
 import generateFromERC7730 from "./generateFromERC7730";
+import { Upload } from "lucide-react";
 
 const CardErc7730 = () => {
   const [input, setInput] = useState("");
@@ -126,6 +127,15 @@ const CardErc7730 = () => {
     }
   };
 
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0 && files[0]) {
+      const file = files[0];
+      await validateAndSetABI(file);
+    }
+    e.target.value = '';
+  };
+
   return (
     <div className="w-full lg:w-[580px]">
       <form onSubmit={handleSubmit} className="mb-4 flex w-full flex-col gap-4">
@@ -166,10 +176,25 @@ const CardErc7730 = () => {
                         : "border-input"
                     }`}
                   />
-                  <p className="text-sm text-muted-foreground">
-                    💡 You can drag & drop a JSON file or paste ABI content
-                    directly
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="file"
+                      accept=".json"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                      id="abi-file-input"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => document.getElementById('abi-file-input')?.click()}
+                      className="flex items-center gap-2"
+                    >
+                      <Upload className="h-4 w-4" />
+                      Upload JSON File
+                    </Button>
+                  </div>
                   {fileError && (
                     <p className="text-sm text-red-600">{fileError}</p>
                   )}
