@@ -7,6 +7,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 import { Erc7730StoreProvider } from "~/store/erc7730Provider";
 import { Toaster } from "~/components/ui/toaster";
 import { ThemeProvider } from "~/components/ui/theme-provider";
+import { AuthProvider } from "~/components/auth/AuthProvider";
 import GoogleTagManager from "~/components/scripts/googleTagManager";
 import Script from "next/script";
 
@@ -43,19 +44,21 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body>
-        <TRPCReactProvider>
-          <Erc7730StoreProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <Toaster />
-            </ThemeProvider>
-          </Erc7730StoreProvider>
-        </TRPCReactProvider>
+        <AuthProvider>
+          <TRPCReactProvider>
+            <Erc7730StoreProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+                <Toaster />
+              </ThemeProvider>
+            </Erc7730StoreProvider>
+          </TRPCReactProvider>
+        </AuthProvider>
         {ONETRUST_ID && (
           <Script
             strategy="beforeInteractive"
