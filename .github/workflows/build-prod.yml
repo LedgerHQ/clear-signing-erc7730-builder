@@ -1,0 +1,87 @@
+name: build-prod
+
+# Build + push the prod image on every push to main.
+# Image: infra-oci-web-apps-prod-green/<repo>/prod:<semver>
+# Versioning is automatic (auto-tag on merge) — devs just merge PRs as usual.
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: build-prod-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write # create the git tag
+  id-token: write # GitHub OIDC -> JFrog
+
+env:
+  REGISTRY: jfrog.ledgerlabs.net
+  IMAGE: infra-oci-web-apps-prod-green/clear-signing-erc7730-builder/prod
+
+jobs:
+  build:
+    runs-on: ledgerhq-shared-medium
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # tag history for version calculation
+
+      # Compute the next semver from commit history (default: patch bump).
+      # dry_run here so the tag is only created after a successful push.
+      - name: Compute next version
+        id: ver
+        uses: mathieudutour/github-tag-action@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: patch
+          dry_run: true
+
+      # --- Build the Node app ---
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: SKIP_ENV_VALIDATION=1 npm run build
+
+      # --- Vendor the Python API deps (copied into the image) ---
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --target pydeps -r requirements.txt
+
+      # --- Auth to JFrog via OIDC (no static secrets) ---
+      - name: JFrog OIDC login
+        id: jfrog
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: https://${{ env.REGISTRY }}
+        with:
+          oidc-provider-name: github-oidc
+          oidc-audience: jfrog-github
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ steps.jfrog.outputs.oidc-user }}
+          password: ${{ steps.jfrog.outputs.oidc-token }}
+
+      # --- Build + push image ---
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ steps.ver.outputs.new_version }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ steps.ver.outputs.new_version }}-${{ github.sha }}
+
+      # Only tag the repo once the image is pushed — keeps tags ⇄ images in sync.
+      - name: Create git tag
+        uses: mathieudutour/github-tag-action@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: patch
+          custom_tag: ${{ steps.ver.outputs.new_version }}
