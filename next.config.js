@@ -4,30 +4,31 @@
  */
 import "./src/env.js";
 
+// Base URL of the FastAPI service.
+//  - container: PYTHON_API_URL=http://127.0.0.1:8000 (uvicorn runs alongside Next)
+//  - local dev: defaults to 127.0.0.1:8000
+//  - Vercel:    unset -> falls back to the "/api/" serverless path
+const pyApiBase =
+  process.env.PYTHON_API_URL ??
+  (process.env.NODE_ENV === "development" ? "http://127.0.0.1:8000" : null);
+
 /** @type {import("next").NextConfig} */
 const config = {
   rewrites: async () => {
     return [
       {
         source: "/api/py/:path*",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/api/py/:path*"
-            : "/api/",
+        destination: pyApiBase ? `${pyApiBase}/api/py/:path*` : "/api/",
       },
       {
         source: "/docs",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/api/py/docs"
-            : "/api/py/docs",
+        destination: pyApiBase ? `${pyApiBase}/api/py/docs` : "/api/py/docs",
       },
       {
         source: "/openapi.json",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/api/py/openapi.json"
-            : "/api/py/openapi.json",
+        destination: pyApiBase
+          ? `${pyApiBase}/api/py/openapi.json`
+          : "/api/py/openapi.json",
       },
       {
         source: "/api/trpc/:path*",

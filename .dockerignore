@@ -1,0 +1,13 @@
+# Build context: we COPY the CI-built node_modules/.next/pydeps explicitly,
+# so only trim things that are never needed at runtime.
+.git
+.github
+argocd
+*.md
+LICENSE
+.env
+.env.*
+__pycache__
+**/__pycache__
+*.pyc
+.next/cache
