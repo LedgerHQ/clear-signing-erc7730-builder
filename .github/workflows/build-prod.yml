@@ -32,7 +32,7 @@ jobs:
       # dry_run here so the tag is only created after a successful push.
       - name: Compute next version
         id: ver
-        uses: mathieudutour/github-tag-action@v6
+        uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: patch
@@ -80,7 +80,7 @@ jobs:
 
       # Only tag the repo once the image is pushed — keeps tags ⇄ images in sync.
       - name: Create git tag
-        uses: mathieudutour/github-tag-action@v6
+        uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: patch
