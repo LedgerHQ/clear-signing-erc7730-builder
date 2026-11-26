@@ -41,7 +41,7 @@ jobs:
       # --- Build the Node app ---
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - run: npm ci
       - run: SKIP_ENV_VALIDATION=1 npm run build
 
