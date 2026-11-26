@@ -1,6 +1,6 @@
 # Base image with both Node and Python, pulled via the Ledger JFrog OSS proxy
 # to avoid Docker Hub anonymous-pull rate limits on shared CI runners.
-FROM jfrog.ledgerlabs.net/ossproxy-oci-proxy-dockerio/nikolaik/python-nodejs:python3.12-nodejs20-slim
+FROM jfrog.ledgerlabs.net/ossproxy-oci-proxy-dockerio/nikolaik/python-nodejs:python3.12-nodejs22-slim
 
 WORKDIR /app
 
