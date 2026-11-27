@@ -54,7 +54,7 @@ jobs:
       # --- Auth to JFrog via OIDC (no static secrets) ---
       - name: JFrog OIDC login
         id: jfrog
-        uses: jfrog/setup-jfrog-cli@v4
+        uses: jfrog/setup-jfrog-cli@ad1052fd1b866ba57235228e8cc8997cf968fc4b # v4.12.0
         env:
           JF_URL: https://${{ env.REGISTRY }}
         with:
